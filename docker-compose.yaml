@@ -1,0 +1,16 @@
+services:
+  api:
+    user: root
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+      - /app/dist
+      - db_data:/app/data 
+    ports:
+      - "3000:3000"
+
+volumes:
+  db_data:
