@@ -5,7 +5,6 @@ import userModel from '../models/user.js';
 class UserController extends BaseController {
     constructor() {
         super(userModel);
-        this.create = this.create.bind(this);
         this.findAll = this.findAll.bind(this);
         this.findById = this.findById.bind(this);
         this.update = this.update.bind(this);
@@ -19,7 +18,7 @@ class UserController extends BaseController {
         app.put('/users/:id', authenticateToken, this.update);
         app.delete('/users/:id', authenticateToken, this.delete);
     }
-    async create(req, res) {
+    create = async (req, res) => {
         try {
             const userObj = req.body;
             const { password } = userObj;

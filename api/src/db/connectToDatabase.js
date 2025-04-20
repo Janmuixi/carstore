@@ -36,7 +36,7 @@ export const initDatabase = async () => {
     const database = await db();
     console.log(initSql);
     const response = await new Promise((resolve, reject) => {
-      database.run(initSql, function (err) {
+      database.exec(initSql, function (err) {
         if (err) {
           reject(err);
         } else {

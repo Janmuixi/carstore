@@ -1,6 +1,7 @@
 import express from 'express';
 import db, { initDatabase, healthCheck } from './db/connectToDatabase.js';
 import UserController from './controllers/users.js';
+import CarsController from './controllers/cars.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -10,6 +11,7 @@ const PORT = 3000;
 app.use(express.json());
 
 UserController.routes(app);
+CarsController.routes(app);
 
 app.get('/health-check', async (req, res) => {
   try {
