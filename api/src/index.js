@@ -3,13 +3,20 @@ import db, { initDatabase, healthCheck } from './db/connectToDatabase.js';
 import UserController from './controllers/users.js';
 import CarsController from './controllers/cars.js';
 import dotenv from 'dotenv';
+import cors from 'cors';
 dotenv.config();
 
 const app = express();
 const PORT = 3001;
 
 app.use(express.json());
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
 
+app.use(cors());
 UserController.routes(app);
 CarsController.routes(app);
 

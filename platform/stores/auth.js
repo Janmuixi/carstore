@@ -4,10 +4,11 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
     token: null
-    }),
+  }),
+  persist: true,
   actions: {
     async login(username, password) {
-      const response = await $fetch('/api/login', {
+      const response = await $fetch('/api/users/login', {
         method: 'POST',
         body: {
           username,
@@ -22,7 +23,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     async logout() {
-      const response = await $fetch('/api/logout', {
+      const response = await $fetch('/api/users/logout', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${this.token}`

@@ -6,17 +6,20 @@ export default defineNuxtConfig({
     strict: false
   },
   runtimeConfig: {
-    apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:3001'
+    public: {
+      apiBaseUrl: 'http://localhost:3001'
+    }
   },
   modules: [
     '@nuxt/ui',
     '@nuxt/image',
     '@nuxt/fonts',
     '@nuxt/icon',
-    '@pinia/nuxt'
+    '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
   ],
   css: ['~/assets/css/main.css'],
   colorMode: {
     preference: 'light'
-  }
+  },
 })
