@@ -10,7 +10,24 @@ services:
       - /app/dist
       - db_data:/app/data 
     ports:
+      - "3001:3001"
+  platform:
+    user: root
+    build:
+      context: ./platform
+      dockerfile: Dockerfile
+    volumes:
+      - ./platform:/app
+      - /app/node_modules
+      - /app/dist
+    ports:
       - "3000:3000"
-
+  sqliteweb:
+    image: tomdesinto/sqliteweb
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./api/database.sqlite:/data/database.sqlite 
+    command: /data/database.sqlite
 volumes:
   db_data:

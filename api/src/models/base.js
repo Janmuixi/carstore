@@ -27,7 +27,8 @@ export default class Base {
     const sql = `INSERT INTO ${this.tableName} (id, ${keys.join(', ')}) VALUES (?, ${placeholders})`;
     const database = await db();
     const runAsync = promisify(database.run).bind(database);
-    return runAsync(sql, [id, ...values]);
+    await runAsync(sql, [id, ...values]);
+    return { id, ...data };
   }
   async update(id, data) {
     const keys = Object.keys(data);

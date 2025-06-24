@@ -12,3 +12,10 @@ CREATE TABLE IF NOT EXISTS cars (
     year INTEGER NOT NULL,
     price REAL NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS car_images (
+    id TEXT PRIMARY KEY,
+    car_id TEXT NOT NULL,
+    image_data BYTEA NOT NULL,
+    FOREIGN KEY (car_id) REFERENCES cars(id)
+);

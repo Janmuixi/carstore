@@ -1,6 +1,11 @@
 import { authenticateToken } from "../middlewares/auth.js";
 import carModel from "../models/car.js";
 import BaseController from "./base.js"
+import fs from "fs/promises";
+import multer from "multer";
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 class CarsController extends BaseController {
     constructor() {
@@ -12,25 +17,34 @@ class CarsController extends BaseController {
         this.delete = this.delete.bind(this);
     }
     routes(app) {
-        app.post('/cars', authenticateToken, this.create);
+        app.post('/cars', authenticateToken, upload.any(), this.create);
         app.get('/cars', authenticateToken, this.findAll);
         app.get('/cars/:id', authenticateToken, this.findById);
         app.put('/cars/:id', authenticateToken, this.update);
         app.delete('/cars/:id', authenticateToken, this.delete);
         app.post('/cars/fill', authenticateToken, this.fill);
     }
-    async fill(req, res) {
+    async create(req, res) {
+        console.log("Creating car with request body:", req);
         try {
-            const cars = await this.model.find();
+            const images = req.files || [];
+            const carData = { ...req.body };
+            const car = await this.model.create(carData);
+            await this.model.uploadImages(car.id, images.map(image => image.buffer));
+            return res.status(201).json({ message: "Car created successfully", data: car });
+        } catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
+    async fill(_, res) {
+        try {
+            // TODO: Find a way to fill the database with car models
+            const cars = await this.model.findAll();
             if (cars.length > 0) {
                 return res.status(200).json({ message: "Cars already filled" });
             }
-            const carData = [
-                { name: "Car 1", brand: "Brand A", year: 2020 },
-                { name: "Car 2", brand: "Brand B", year: 2021 },
-                { name: "Car 3", brand: "Brand C", year: 2022 },
-            ];
-            await this.model.insertMany(carData);
+            const modelsFile = await fs.readFile('all-vehicles-model.json', 'utf-8');
+            const models = JSON.parse(modelsFile);
             return res.status(201).json({ message: "Cars filled successfully" });
         } catch (error) {
             return res.status(500).json({ error: error.message });

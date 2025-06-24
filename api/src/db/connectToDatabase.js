@@ -31,10 +31,8 @@ export const healthCheck = async () => {
 export const initDatabase = async () => {
   try {
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
-    console.log('Initializing database from %s', __dirname);
     const initSql = fs.readFileSync(path.join(__dirname, 'init.sql'), 'utf-8');
     const database = await db();
-    console.log(initSql);
     const response = await new Promise((resolve, reject) => {
       database.exec(initSql, function (err) {
         if (err) {
@@ -44,7 +42,6 @@ export const initDatabase = async () => {
         }
       });
     });
-    console.log('Response:', response);
     console.log('Database initialized successfully');
     return response;
   } catch (error) {

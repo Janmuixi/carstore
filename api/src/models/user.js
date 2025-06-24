@@ -1,6 +1,5 @@
 import Base from './base.js';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import {promisify} from 'util';
 import db from '../db/connectToDatabase.js';
 
