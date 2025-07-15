@@ -1,8 +1,6 @@
 import jwt from 'jsonwebtoken';
 
 export function authenticateToken(req, res, next) {
-  next(); // TODO: remove this line when implementing authentication
-  return;
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Bearer <token>
   if (!token) return res.sendStatus(401);

@@ -25,15 +25,14 @@ class CarsController extends BaseController {
         app.post('/cars/fill', authenticateToken, this.fill);
     }
     async create(req, res) {
-        console.log("Creating car with request body:", req);
         try {
             const images = req.files || [];
             const carData = { ...req.body };
             const car = await this.model.create(carData);
             await this.model.uploadImages(car.id, images.map(image => image.buffer));
-            return res.status(201).json({ message: "Car created successfully", data: car });
+            return res.status(201).json({ status: 'success', message: "Car created successfully", data: car });
         } catch (error) {
-            return res.status(500).json({ error: error.message });
+            return res.status(500).json({ status: 'error', error: error.message });
         }
     }
     async fill(_, res) {

@@ -9,7 +9,6 @@ export default class Base {
   async findAll() {
     const sql = `SELECT * FROM ${this.tableName}`;
     const database = await db();
-    console.log('SQL:', sql);
     const allAsync = promisify(database.all).bind(database);
     return allAsync(sql);
   }

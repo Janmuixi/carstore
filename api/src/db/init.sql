@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS cars (
     id TEXT PRIMARY KEY,
     make TEXT NOT NULL,
     model TEXT NOT NULL,
+    description TEXT NOT NULL,
     year INTEGER NOT NULL,
     price REAL NOT NULL
 );
