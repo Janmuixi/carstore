@@ -1,18 +1,18 @@
 services:
   api:
-    user: root
     build:
       context: ./api
       dockerfile: Dockerfile
+    environment:
+      - JWT_SECRET=118d7cf5e57ffbf2bb8268c867e68334
+      - JWT_EXPIRES_IN=1h
     volumes:
       - ./api:/app
       - /app/node_modules
       - /app/dist
-      - db_data:/app/data 
     ports:
       - "3001:3001"
   platform:
-    user: root
     build:
       context: ./platform
       dockerfile: Dockerfile
@@ -22,12 +22,5 @@ services:
       - /app/dist
     ports:
       - "3000:3000"
-  sqliteweb:
-    image: tomdesinto/sqliteweb
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./api/database.sqlite:/data/database.sqlite 
-    command: /data/database.sqlite
 volumes:
   db_data:

@@ -35,6 +35,7 @@ class UserController extends BaseController {
     const { email, password } = req.body;
     try {
       const user = await this.model.findByEmail(email);
+      
       if (!user) {
         return res
           .status(401)
@@ -44,6 +45,7 @@ class UserController extends BaseController {
         password,
         user.password_hash,
       );
+      
       if (!isValidPassword) {
         return res
           .status(401)
@@ -52,6 +54,7 @@ class UserController extends BaseController {
       const token = generateToken(user.id);
       res.status(200).json({ status: "success", data: token });
     } catch (error) {
+      console.error("Login error:", error);
       res.status(500).json({ status: "error", message: error.message });
     }
   };

@@ -115,8 +115,7 @@ const schema = v.object({
         v.minValue(10, "Value must be bigger than 10"),
         v.maxValue(100000000, "Value must be smaller than 100000000")
     ),
-    description: v.pipe(v.string(), v.minLength(1, 'Must be at least 8 characters')),
-    images: v.array(v.mimeType(["image/jpeg", "image/png"]), "Images must be files"),
+    description: v.pipe(v.string(), v.minLength(1, 'Must be at least 8 characters'))
 })
 
 const form = reactive({
@@ -136,6 +135,25 @@ function triggerFileInput() {
 function onImageUpload(event) {
     const files = event.target.files
     for (const file of files) {
+        // Validate file type using valibot
+        const imageSchema = v.object({
+            type: v.union([
+                v.literal('image/jpeg'),
+                v.literal('image/png')
+            ], 'Only JPEG or PNG images are allowed')
+        })
+
+        const result = v.safeParse(imageSchema, { type: file.type })
+        if (!result.success) {
+            const toast = useToast()
+            toast.add({
+                title: "Invalid image type",
+                description: "Only JPEG or PNG images are allowed.",
+                color: "error",
+            })
+            continue
+        }
+
         const reader = new FileReader()
         reader.onload = (e) => {
             images.push({
@@ -155,7 +173,8 @@ async function onSubmit() {
     const { make, model, year, price } = form
     const { api } = useApiFetch()
     const formData = new FormData()
-
+    console.log(images);
+    
     formData.append("make", make)
     formData.append("model", model)
     formData.append("year", parseInt(year))

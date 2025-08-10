@@ -17,7 +17,7 @@
         <UButton class="cursor-pointer" color="primary" @click="$router.push('/admin/login')">
           View all cars
         </UButton>
-        <UButton class="cursor-pointer" color="primary" @click="$router.push('/admin/login')">
+        <UButton class="cursor-pointer" color="primary" @click="$router.push('/admin/new-admin')">
           Add new admin
         </UButton>
       </UCardActions>

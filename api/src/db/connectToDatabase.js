@@ -6,15 +6,13 @@ import { fileURLToPath } from 'url';
 
 const db = async () => {
   try {
-    return new sqlite3.Database('./database.sqlite', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+    return new sqlite3.Database('database.sqlite', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
       if (err) {
         console.error('❌ Failed to open SQLite DB:', err.message);
-        throw err;
       }
     });
   } catch (err) {
     console.error('❌ Failed to open SQLite DB:', err.message);
-    throw err;
   }
 };
 
@@ -42,10 +40,9 @@ export const initDatabase = async () => {
         }
       });
     });
-    console.log('Database initialized successfully');
     return response;
   } catch (error) {
-    console.log('Error initializing database:', error);
+    throw error;
   }
 };
 
