@@ -1,4 +1,4 @@
-import { authenticateToken, generateToken } from "../middlewares/auth.js";
+import { authenticateToken, generateToken, generateTokenPair, verifyRefreshToken } from "../middlewares/auth.js";
 import BaseController from "./base.js";
 import userModel from "../models/user.js";
 
@@ -11,8 +11,9 @@ class UserController extends BaseController {
     this.delete = this.delete.bind(this);
   }
   routes(app) {
-    app.post("/users", authenticateToken, this.create);
+    app.post("/users", this.create);
     app.post("/users/login", this.login);
+    app.post("/users/refresh", this.refreshToken);
     app.get("/users", authenticateToken, this.findAll);
     app.get("/users/:id", authenticateToken, this.findById);
     app.put("/users/:id", authenticateToken, this.update);
@@ -51,11 +52,50 @@ class UserController extends BaseController {
           .status(401)
           .json({ status: "error", message: "Invalid email or password" });
       }
-      const token = generateToken(user.id);
-      res.status(200).json({ status: "success", data: token });
+      
+      const { accessToken, refreshToken } = generateTokenPair(user.id);
+      
+      res.status(200).json({ 
+        status: "success", 
+        data: { 
+          user: { id: user.id, email: user.email },
+          accessToken,
+          refreshToken
+        } 
+      });
     } catch (error) {
       console.error("Login error:", error);
       res.status(500).json({ status: "error", message: error.message });
+    }
+  };
+  
+  refreshToken = async (req, res) => {
+    const { refreshToken } = req.body;
+    
+    if (!refreshToken) {
+      return res.status(400).json({ 
+        status: "error", 
+        message: "Refresh token is required" 
+      });
+    }
+    
+    try {
+      const decoded = await verifyRefreshToken(refreshToken);
+      const { accessToken, refreshToken: newRefreshToken } = generateTokenPair(decoded.id);
+      
+      res.status(200).json({ 
+        status: "success", 
+        data: { 
+          accessToken,
+          refreshToken: newRefreshToken
+        } 
+      });
+    } catch (error) {
+      console.error("Token refresh error:", error);
+      res.status(401).json({ 
+        status: "error", 
+        message: "Invalid refresh token" 
+      });
     }
   };
 }

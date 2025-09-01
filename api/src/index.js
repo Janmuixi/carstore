@@ -10,11 +10,6 @@ const app = express();
 const PORT = 3001;
 
 app.use(express.json());
-const corsOptions = {
-  origin: 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-};
 
 app.use(cors());
 UserController.routes(app);

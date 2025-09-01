@@ -65,6 +65,7 @@
                     size="lg"
                     class="cursor-pointer w-full mt-4 font-semibold text-lg text-amber-50 flex items-center justify-center"
                     color="error"
+                    :loading="isLoading"
                 >
                     <span>Login</span>
                 </UButton>
@@ -74,35 +75,40 @@
 </template>
 
 <script setup>
+import { useApiFetch } from '#imports';
+
 const form = reactive({
     email: "",
     password: "",
 });
 
+const isLoading = ref(false);
+
 async function onSubmit() {
     const { email, password } = form;
-    const { api } = useApiFetch();
+    const authStore = useAuthStore();
+    const router = useRouter();
+    const toast = useToast();
+    const api = useApiFetch()
+    isLoading.value = true;
+    
     try {
-        const res = await api("/users/login", {
-            method: "POST",
-            body: {
-                email,
-                password,
-            },
+        await authStore.login(email, password);
+        toast.add({
+            title: "Login successful",
+            description: "Welcome back!",
+            color: "green",
         });
-        if (res.status == "success") {
-            const authStore = useAuthStore();
-            authStore.token = res.data;
-            const router = useRouter();
-            router.push("/admin");
-        }
+        router.push("/admin");
     } catch (error) {
-        const toast = useToast();
+        console.error('Login error:', error);
         toast.add({
             title: "Login failed",
             description: "Email or password is incorrect",
             color: "error",
         });
+    } finally {
+        isLoading.value = false;
     }
 }
 </script>

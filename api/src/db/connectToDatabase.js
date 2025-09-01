@@ -6,11 +6,14 @@ import { fileURLToPath } from 'url';
 
 const db = async () => {
   try {
-    return new sqlite3.Database('database.sqlite', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+    const database = new sqlite3.Database('database.sqlite', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
       if (err) {
         console.error('❌ Failed to open SQLite DB:', err.message);
       }
     });
+    // Ensure foreign key constraints are enforced on every connection
+    database.exec('PRAGMA foreign_keys = ON;');
+    return database;
   } catch (err) {
     console.error('❌ Failed to open SQLite DB:', err.message);
   }

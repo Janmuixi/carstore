@@ -6,6 +6,8 @@ services:
     environment:
       - JWT_SECRET=118d7cf5e57ffbf2bb8268c867e68334
       - JWT_EXPIRES_IN=1h
+      - JWT_REFRESH_SECRET=118d7cf5e57ffbf2bb8268c867e68335
+      - JWT_REFRESH_EXPIRES_IN=7d
     volumes:
       - ./api:/app
       - /app/node_modules
